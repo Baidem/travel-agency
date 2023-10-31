@@ -1,0 +1,71 @@
+# Ignore system configuration files
+.DS_Store
+Thumbs.db
+
+# Ignore environment files
+.env
+
+# Ignore Visual Studio Code configuration files
+.vscode/
+
+# Ignore log files
+*.log
+
+# Ignore Visual Studio backup files
+*.sln
+
+# Ignore temporary files
+*.swp
+
+# Ignore Visual Studio project configuration files
+*.VC.db
+*.VC.VC.opendb
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.xcodeproj
+
+# Ignore IDEA configuration files
+/.idea/
+
+# Ignore build files
+/dist/
+/public/css/main.css
+
+# Ignore dependencies
+node_modules/
+bower_components
+
+# Ignore generated files
+electron-api.json
+electron.d.ts
+spec/.hash
+
+# Ignore cache files
+.eslintcache*
+depshash
+depshash-target
+patches/mtime-cache.json
+
+# Ignore binary files
+*.seed
+*.csv
+*.dat
+*.out
+*.pid
+*.gz
+
+# Ignore log and result files
+pids
+logs
+results
+
+# Ignore temporary files
+tmp
+
+# Ignore coverage files
+coverage
+
+# Ignore package manager lock files
+package-lock.json
+yarn.lock
