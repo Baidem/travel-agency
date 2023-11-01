@@ -2,8 +2,7 @@ import { contextBridge, ipcRenderer } from "electron";
 
 contextBridge.exposeInMainWorld("ipcRendererCustom", {
   onceInitData: (cb: any) => {
-    console.log("on passe dans le onceInitData");
-
+    console.log("check ! home.preload.ts onceInitData");
     ipcRenderer.once("init-data", cb);
   },
 

@@ -62,7 +62,7 @@ class WindowManager {
             .loadFile(path.join(__dirname, "..", "..", "src", "views", templateName, `${templateName}.html`))
             .then(() => {
                 if (templateData) {
-                    console.log("on send les donnees");
+                    console.log("check ! windowManager win.webContents.send(\"init-data\", " + templateName);
                     win.webContents.send("init-data", templateData);
                 }
             });
@@ -73,7 +73,7 @@ class WindowManager {
             });
         
         this.addWindow(templateName, win);
-        console.log("create window " + templateName + " !!!");
+        console.log("check ! WindowManager createWindow(...) template: " + templateName);
     }
 }
 

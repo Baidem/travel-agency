@@ -38,7 +38,7 @@ var Main = /** @class */ (function () {
     Main.prototype.initDefaultListeners = function () {
         var _this = this;
         this.app.whenReady().then(function () {
-            console.log("app ready !!!");
+            console.log("check ! Main.ts initDefaultListeners, app.whenReady");
             _this.generateMainWindow();
         });
         // Fix darwin closed main window

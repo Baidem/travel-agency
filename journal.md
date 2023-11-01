@@ -90,8 +90,29 @@
 
 # Design home page
 
-- html : modèle html des cards
+- home.html : modèle html des cards
+- home.controller.ts : generateCard(...) = modèle js des cards
 
+# CHAINE DE CREATION DE LA HOME PAGE ET DE SES DATA: 
+
+> Mains.ts 
+> constructor() 
+> this.initDefaultListeners(); 
+> this.app.whenReady().then(...) 
+> generateMainWindow()
+> WindowManager.ts 
+> createWindow(templateName, templateData) 
+> win.loadFile(...)
+  .then(()=>{... win.webcontents.send(
+    "init-data",
+    travelItemService.getAll()
+  )}); 
+> home.preload.ts 
+> onceInitData(cb) 
+> home.controller.ts
+> (window as any).ipcRendererCustom.onceInitData(onceInitDataCb);
+> onceInitDataCb = ((...)=>{...})
+> generateCard(travelItemList)
 
 
 

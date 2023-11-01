@@ -58,7 +58,7 @@ var WindowManager = /** @class */ (function () {
             .loadFile(path_1.default.join(__dirname, "..", "..", "src", "views", templateName, "".concat(templateName, ".html")))
             .then(function () {
             if (templateData) {
-                console.log("on send les donnees");
+                console.log("check ! windowManager win.webContents.send(\"init-data\", " + templateName);
                 win.webContents.send("init-data", templateData);
             }
         });
@@ -67,7 +67,7 @@ var WindowManager = /** @class */ (function () {
             _this.deleteWindow(templateName);
         });
         this.addWindow(templateName, win);
-        console.log("create window " + templateName + " !!!");
+        console.log("check ! WindowManager createWindow(...) template: " + templateName);
     };
     return WindowManager;
 }());

@@ -16,7 +16,7 @@ export default class Main {
     private initDefaultListeners(): void {
     
         this.app.whenReady().then(() => {
-            console.log("app ready !!!");
+            console.log("check ! Main.ts initDefaultListeners, app.whenReady");
             this.generateMainWindow();
         });
     
