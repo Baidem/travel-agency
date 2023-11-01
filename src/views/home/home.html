@@ -14,7 +14,59 @@
 </head>
 
 <body>
-    <h1>Travel agency !!!</h1>
+    <header>
+        <section> <!--/* navbar */-->
+            <div class="container">
+                <div class="row bg-primary-subtle shadow">
+                    <div class="col-auto">
+                        <div class="">
+                            <!--/* Here navbar */-->
+                            <div class="navbar navbar-light">
+                                <div class="container-fluid justify-content-start">
+                                    <!--/* Here Title */-->
+                                    <h1 class="p-3">
+                                        <i class="fa-solid fa-compass"></i>
+                                        Travel agency
+                                    </h1>
+                                    <!--/* Here Add button */-->
+                                    <button class="btn btn-sm btn-outline-secondary" type="button">Add new travel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </header>
+
+    <main>
+        <section class="mt-5"> <!--/* cards */-->
+            <div class="container">
+                <div class="row ">
+                    <!--/* Here card list */-->
+                    <div class="col-4">
+                        <div class="">
+                            <div class="card mb-3 shadow bg-primary-subtle">
+                                <img src="https://picsum.photos/400" class="card-img-top" alt="description de l'image">
+                                <div class="card-body">
+                                    <h5 class="card-title">Titre du voyage</h5>
+                                    <p class="card-text">Destination du voyage</p>
+                                    <p class="card-text">Courte description du voyage. Courte description du voyage. Courte description du voyage. </p>
+                                    <p class="card-text">Prix de l'offre €</p>
+                                    <p class="card-text">
+                                        <small class="text-muted">
+                                            <button class="btn btn-sm btn-outline-secondary" type="button">Show travel details</button>
+                                        </small>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--/* end card list */-->
+                </div>
+            </div>
+        </section>
+    </main>
 
 
     <script src="../../controllers/home/home.controller.js"></script>

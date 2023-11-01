@@ -88,6 +88,10 @@
 
 # Commit N°1 : prepare home page
 
+# Design home page
+
+- html : modèle html des cards
+
 
 
 
