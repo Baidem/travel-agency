@@ -11,13 +11,18 @@ var travelItemService = /** @class */ (function () {
     travelItemService.prototype.getAllById = function (id) {
         return this.travelItems.find(function (tI) { return tI.id === id; });
     };
+    travelItemService.prototype.getById = function (id) {
+        return this.travelItems.find(function (tI) { return tI.id === id; });
+    };
     travelItemService.prototype.insert = function (newItem) {
+        console.log("travel-item.service.ts insert", newItem.id);
         this.travelItems.push(newItem);
     };
     travelItemService.prototype.update = function (itemEdited) {
+        console.log("travel-item.service.ts update", itemEdited.id);
         var index = this.travelItems.findIndex(function (tI) { return tI.id === itemEdited.id; });
         if (index < 0)
-            throw 'L\'id ne correspond à aucun item';
+            throw "The id does not correspond to any item";
         this.travelItems[index] = itemEdited;
     };
     travelItemService.prototype.delete = function (id) {

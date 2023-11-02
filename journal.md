@@ -134,8 +134,9 @@
 - import ipcMain from "electron"
 - ipcMain.on("ask-show-new-item-form", ...)
   - ipcMain.handle("add-new-item", ...)
-  - newItemWindow.on("closed", ...)
-  - newItemWindow.on("closed", ...)
+    - homeWindwow.webContents.send("new-item-added", newItem)
+    - return success
+- newItemWindow.on("closed", ...)
 
 # home.controller.ts
 
@@ -160,4 +161,64 @@
 
 # Commit N°3 : Page new travel avec mécanique
 
+# préparation de la page edit-item
 
+- creation de src/contoller/edit-item/edit-item.controller.ts
+- creation de src/views/edit-item/neditew-item.html
+- creation de app/preloads/edit-item.preload.ts
+
+# Design de edit-item.html
+
+- link bootstrap
+- script controller
+- header design
+- form design
+
+# travelItemService.ts
+
+- getById
+
+# Mains.ts : ouverture de la page
+
+- ipcMain.on("ask-show-edit-item-form", ...)
+  - ipcMain.handle("edit-item", ...)
+    - newItemWindow.on("closed", ...)
+    - return success
+  - newItemWindow.on("closed", ...)
+
+# home.controller.ts
+
+- const btnEdit = document.createElement("button");
+- btnEdit.type = "button";
+- btnEdit.textContent = "Edit travel details";
+- editBtn.addEventListener("click, ...)
+  - (window as any).ipcRendererCustom.sendAskShowEditItemForm(travelItem.id);
+- onItemEditedCb
+- (window as any).ipcRendererCustom.onItemEdited(onItemEditedCb)
+
+# home.preload.ts
+
+- sendAskShowEditItemForm
+- onItemEdited
+
+# edit-item.controller.ts
+
+- onceInitDataNewItemCb= (e, itemToEdit) => {...}
+- editForm.addEventListener"submit", (e) => {...}
+  - dataFom
+  - invoke : (window as any).ipcRendererCustom.invokeAddNewItem(...)
+  
+# edit-item.preload.ts
+
+- import { contextBridge, ipcRenderer } from 'electron'
+- onceInitData
+- invokeAddNewItem
+- invokeEditItem
+
+### buggs
+
+- X ouverture de la page edit
+- X auto complét de long description
+- X submit fail...
+
+# Commit N°3 : Page edit travel avec mécanique
