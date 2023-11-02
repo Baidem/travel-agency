@@ -75,6 +75,7 @@ export default class Main {
                     };
                 });
 
+                // ON CLOSED REMOVE HANDLER //
                 newItemWindow.on('closed', () => {
                     ipcMain.removeHandler('add-new-item');
                 });
@@ -115,6 +116,15 @@ export default class Main {
                         const travelItemList = travelItemService.getAll();
                         windowManager.createWindow(WindowNameMapper.HOME, travelItemList);
                     }
+
+                    // SEND ITEM-EDITED TO DETAIL WINDOW OR CREATE A NEW ONE //
+                    if (windowManager.hasWindow(WindowNameMapper.DETAIL_ITEM)) {
+                        const detailWindow = windowManager.getWindow(WindowNameMapper.DETAIL_ITEM);
+                        detailWindow.webContents.send('detail-item-edited', editedItem);
+                    } else {
+                        const travelItemList = travelItemService.getAll();
+                        windowManager.createWindow(WindowNameMapper.DETAIL_ITEM, editedItem);
+                    }
         
                     // RETURN SUCCESS AND MESSAGE //
                     return {
@@ -123,11 +133,121 @@ export default class Main {
                     };
                 });
                 
-                // ON CLOSED //
+                // ON CLOSED REMOVE HANDLER //
                 editWindow.on('closed', () => {
                     ipcMain.removeHandler('edit-item');
                 });
             }
         });
+
+        // ** ASK DISPLAY EDIT-ITEM ** //
+        ipcMain.on('ask-display-edit-item-form', (e: any, id: number) => {
+            console.log("Check! ipcMain.on('ask-display-edit-item-form', ...)", id);
+            
+            if (windowManager.hasWindow(WindowNameMapper.EDIT_ITEM)) {
+                windowManager.getWindow(WindowNameMapper.EDIT_ITEM).show();
+            } else {
+                const itemToEdit = travelItemService.getById(id);
+                console.log("itemToEdit", itemToEdit);
+                
+                if (!itemToEdit) {
+                    console.log("Item does not exist");
+                    throw "Item does not exist";
+                } 
+                
+                windowManager.createWindow(WindowNameMapper.EDIT_ITEM, itemToEdit, 600, 840);
+        
+                const editWindow = windowManager.getWindow(WindowNameMapper.EDIT_ITEM);
+                
+                // HANDLE EDIT-ITEM //
+                ipcMain.handle('edit-item', (e: any, editedItem: any) => {
+                    console.log("Check! ipcMain.handle('edit-item', ...)", editedItem.id);
+                    
+                    // Update travel list
+                    travelItemService.update(editedItem);
+            
+                    // SEND ITEM-EDITED TO HOME WINDOW OR CREATE A NEW ONE //
+                    if (windowManager.hasWindow(WindowNameMapper.HOME)) {
+                        const homeWindow = windowManager.getWindow(WindowNameMapper.HOME);
+                        homeWindow.webContents.send('item-edited', editedItem);
+                    } else {
+                        const travelItemList = travelItemService.getAll();
+                        windowManager.createWindow(WindowNameMapper.HOME, travelItemList);
+                    }
+
+                    // SEND ITEM-EDITED TO DETAIL WINDOW OR CREATE A NEW ONE //
+                    if (windowManager.hasWindow(WindowNameMapper.DETAIL_ITEM)) {
+                        const detailWindow = windowManager.getWindow(WindowNameMapper.DETAIL_ITEM);
+                        detailWindow.webContents.send('detail-item-edited', editedItem);
+                    } else {
+                        const travelItemList = travelItemService.getAll();
+                        windowManager.createWindow(WindowNameMapper.DETAIL_ITEM, editedItem);
+                    }
+        
+                    // RETURN SUCCESS AND MESSAGE //
+                    return {
+                        success: true,
+                        msg: 'The change was made successfully.'
+                    };
+                });
+                
+                // ON CLOSED REMOVE HANDLER //
+                editWindow.on('closed', () => {
+                    ipcMain.removeHandler('edit-item');
+                });
+            }
+        });
+        
+
+        // ** ASK SHOW DETAIL ITEM ** //
+        ipcMain.on('ask-show-detail-item', (e: any, id: number) => {
+            console.log("Check! ipcMain.on('ask-show-detail-item', ...)", id);
+            
+            if (windowManager.hasWindow(WindowNameMapper.DETAIL_ITEM)) {
+                windowManager.getWindow(WindowNameMapper.DETAIL_ITEM).show();
+            } else {
+                const travelItem = travelItemService.getById(id);
+                console.log("travelItem", travelItem);
+                
+                if (!travelItem) {
+                    console.log("Item does not exist");
+                    throw "Item does not exist";
+                } 
+                
+                windowManager.createWindow(WindowNameMapper.DETAIL_ITEM, travelItem, 1000, 600);
+        
+                const detailWindow = windowManager.getWindow(WindowNameMapper.DETAIL_ITEM);
+                
+                // HANDLE EDIT-ITEM //
+                // ipcMain.handle('edit-item', (e: any, editedItem: any) => {
+                //     console.log("Check! ipcMain.handle('edit-item', ...)", editedItem.id);
+                    
+                //     // Update travel list
+                //     travelItemService.update(editedItem);
+            
+                //     // SEND ITEM-EDITED TO HOME WINDOW OR CREATE A NEW ONE //
+                //     if (windowManager.hasWindow(WindowNameMapper.HOME)) {
+                //         const homeWindow = windowManager.getWindow(WindowNameMapper.HOME);
+                //         homeWindow.webContents.send('item-edited', editedItem);
+                //     } else {
+                //         const travelItemList = travelItemService.getAll();
+                //         windowManager.createWindow(WindowNameMapper.HOME, travelItemList);
+                //     }
+        
+                //     // RETURN SUCCESS AND MESSAGE //
+                //     return {
+                //         success: true,
+                //         msg: 'The change was made successfully.'
+                //     };
+                // });
+                
+                // // ON CLOSED //
+                // detailWindow.on('closed', () => {
+                //     ipcMain.removeHandler('edit-item');
+                // });
+            }
+        });
+
+
     }
 }

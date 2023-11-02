@@ -22,4 +22,8 @@ electron_1.contextBridge.exposeInMainWorld("ipcRendererCustom", {
         console.log("check ! home.preload.ts onItemEdited");
         electron_1.ipcRenderer.on("item-edited", cb);
     },
+    sendAskShowDetailItem: function (id) {
+        console.log("check ! home.preload.ts sendAskShowDetailItem", id);
+        electron_1.ipcRenderer.send("ask-show-detail-item", id);
+    },
 });

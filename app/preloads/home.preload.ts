@@ -21,4 +21,9 @@ contextBridge.exposeInMainWorld("ipcRendererCustom", {
         console.log("check ! home.preload.ts onItemEdited");
         ipcRenderer.on("item-edited", cb);
     },
+    sendAskShowDetailItem: (id: number) => {
+        console.log("check ! home.preload.ts sendAskShowDetailItem", id);
+        ipcRenderer.send("ask-show-detail-item", id);
+    },
+
 });

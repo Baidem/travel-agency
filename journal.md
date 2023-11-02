@@ -86,7 +86,7 @@
 - creation : src/controller/home.controller.ts
 - test communication avec la vue
 
-# Commit N°1 : prepare home page
+# COMMIT N°1 : prepare home page
 
 # Design home page
 
@@ -114,7 +114,7 @@
 -> onceInitDataCb = ((...)=>{...})
 -> generateCard(travelItemList)
 
-# Commit N°2 : Chaine de création de la page home
+# COMMIT N°2 : Chaine de création de la page home
 
 # Preparation à la page new-item
 
@@ -159,7 +159,7 @@
 - form.addEventListener"submit", (e) => {...}
   - (window as any).ipcRendererCustom.invokeAddNewItem(...)
 
-# Commit N°3 : Page new travel avec mécanique
+# COMMIT N°3 : Page new travel avec mécanique
 
 # préparation de la page edit-item
 
@@ -191,7 +191,7 @@
 - const btnEdit = document.createElement("button");
 - btnEdit.type = "button";
 - btnEdit.textContent = "Edit travel details";
-- editBtn.addEventListener("click, ...)
+- btnEdit.addEventListener("click, ...)
   - (window as any).ipcRendererCustom.sendAskShowEditItemForm(travelItem.id);
 - onItemEditedCb
 - (window as any).ipcRendererCustom.onItemEdited(onItemEditedCb)
@@ -212,7 +212,6 @@
 
 - import { contextBridge, ipcRenderer } from 'electron'
 - onceInitData
-- invokeAddNewItem
 - invokeEditItem
 
 ### buggs
@@ -221,4 +220,59 @@
 - X auto complét de long description
 - X submit fail...
 
-# Commit N°3 : Page edit travel avec mécanique
+# COMMIT N°4 : Page edit travel avec mécanique
+
+# préparation de la page detail-item
+
+- creation de src/contoller/detail-item/detail-item.controller.ts
+- creation de src/views/detail-item/detail-item.html
+- creation de app/preloads/detail-item.preload.ts
+
+# Design de detail-item.html
+
+- link bootstrap
+- script controller
+- header design
+- details design
+
+# detail-item.controller.ts
+
+- generateDetailItemCard(travelItem){...} //!!!! events des boutons à faire
+- onceInitDataDetailItemCb= (e, itemToEdit) => {...} //!!!! preload à faire
+
+# home.preload.ts
+
+- sendAskShowDetailItemForm
+
+# home.controller.ts
+
+- const btnDetail = document.createElement("button");
+- btnDetail.type = "button";
+- btnDetail.textContent = "Show travel details";
+- btnDetail.addEventListener("click, ...)
+  - (window as any).ipcRendererCustom.sendAskShowDetailItem(travelItem.id);
+
+# home.preload.ts
+
+- sendAskShowEditItem
+  - ipcRenderer.send("ask-show-detail-item", id)
+
+# detail-item.controller.ts
+
+- onDetailItemEditedCb = (e, editedItem) => {...}
+- (window as any).ipcRendererCustom.onDetailItemEdited(onDetailItemEditedCb)
+- btnEdit!.addEventListener("click", (e) => {...})
+
+# detail-item.preload.ts
+
+- onDetailItemEdited: (cb: any) => {...}
+  - ipcRenderer.on('detail-item-edited', cb);
+- sendAskDisplayEditItemForm: (id: number) => {...}
+  - ipcRenderer.send("ask-display-edit-item-form", id);
+
+# Mains.ts
+
+- ipcMain.on('ask-display-edit-item-form', (e: any, id: number) => {...})
+
+# COMMIT N°5 : bouton edit sur la page détail fonctionne, edit submit avec mise à jour sur home et détail ok !
+

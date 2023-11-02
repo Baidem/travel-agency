@@ -27,9 +27,9 @@ const generateCard = (travelItem: any) => {
     destination.classList.add("item-destination", "card-text");
     shortDescription.classList.add("item-short-description", "card-text");
     price.classList.add("item-price", "card-text");
-    btnDetail.classList.add("btn", "btn-sm", "btn-outline-secondary");
+    btnDetail.classList.add("btn", "btn-sm", "btn-outline-secondary", "me-2");
     btnDetail.type = "button";
-    btnEdit.classList.add("btn", "btn-sm", "btn-outline-secondary");
+    btnEdit.classList.add("btn", "btn-sm", "btn-outline-secondary", "me-2");
     btnEdit.type = "button";
 
     // textContent and args from data travelItem
@@ -50,6 +50,7 @@ const generateCard = (travelItem: any) => {
     // events
     btnDetail.addEventListener("click", (e) => {
         e.preventDefault();
+        (window as any).ipcRendererCustom.sendAskShowDetailItem(travelItem.id);
     })
     btnEdit.addEventListener("click", (e) => {
         e.preventDefault();
@@ -62,7 +63,6 @@ const generateCard = (travelItem: any) => {
     divInter.appendChild(divCard);
     divCol.appendChild(divCard);
     divCardList?.appendChild(divCol);
-
 }
 
 //// ** ELECTRON COMMUNICATION ** ////
@@ -87,25 +87,20 @@ const onNewItemAddedCb = (e: any, travelItem: any) => {
 const onItemEditedCb = (e: any, editedItem: any) => {
     console.log("check ! home.controller.ts const onItemEditedCb = (e: any, editedItem: any) => {...}", editedItem.id);
     
-    const img = document.querySelector(`.item-img[data-id='${editedItem.id}']`)
-    if(img) {
-        img.textContent = editedItem.img;
-    }
+    const image = document.querySelector(`.item-img[data-id='${editedItem.id}']`) as HTMLImageElement;
+    if(image) image.src = editedItem.image;
 
     const title = document.querySelector(`.item-title[data-id='${editedItem.id}']`)
-    if(title) {
-        title.textContent = editedItem.title;
-    }
+    if(title) title.textContent = editedItem.title;
+
+    const destination = document.querySelector(`.item-destination[data-id='${editedItem.id}']`)
+    if(destination) destination.textContent = editedItem.destination;
 
     const shortDescription = document.querySelector(`.iteitem-short-description[data-id='${editedItem.id}']`)
-    if(shortDescription) {
-        shortDescription.textContent = editedItem.shortDescription;
-    }
+    if(shortDescription) shortDescription.textContent = editedItem.shortDescription;
 
     const price = document.querySelector(`.item-price[data-id='${editedItem.id}']`)
-    if(price) {
-        price.textContent = `${editedItem.price} €`;
-    }
+    if(price) price.textContent = `${editedItem.price} €`;
 }
 // PRELOAD //
 (window as any).ipcRendererCustom.onItemEdited(onItemEditedCb)

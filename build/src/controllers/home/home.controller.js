@@ -26,9 +26,9 @@ var generateCard = function (travelItem) {
     destination.classList.add("item-destination", "card-text");
     shortDescription.classList.add("item-short-description", "card-text");
     price.classList.add("item-price", "card-text");
-    btnDetail.classList.add("btn", "btn-sm", "btn-outline-secondary");
+    btnDetail.classList.add("btn", "btn-sm", "btn-outline-secondary", "me-2");
     btnDetail.type = "button";
-    btnEdit.classList.add("btn", "btn-sm", "btn-outline-secondary");
+    btnEdit.classList.add("btn", "btn-sm", "btn-outline-secondary", "me-2");
     btnEdit.type = "button";
     // textContent and args from data travelItem
     img.src = travelItem.image;
@@ -46,6 +46,7 @@ var generateCard = function (travelItem) {
     // events
     btnDetail.addEventListener("click", function (e) {
         e.preventDefault();
+        window.ipcRendererCustom.sendAskShowDetailItem(travelItem.id);
     });
     btnEdit.addEventListener("click", function (e) {
         e.preventDefault();
@@ -77,22 +78,21 @@ window.ipcRendererCustom.onNewItemAdded(onNewItemAddedCb); // preload
 // CALL BACK //
 var onItemEditedCb = function (e, editedItem) {
     console.log("check ! home.controller.ts const onItemEditedCb = (e: any, editedItem: any) => {...}", editedItem.id);
-    var img = document.querySelector(".item-img[data-id='".concat(editedItem.id, "']"));
-    if (img) {
-        img.textContent = editedItem.img;
-    }
+    var image = document.querySelector(".item-img[data-id='".concat(editedItem.id, "']"));
+    if (image)
+        image.src = editedItem.image;
     var title = document.querySelector(".item-title[data-id='".concat(editedItem.id, "']"));
-    if (title) {
+    if (title)
         title.textContent = editedItem.title;
-    }
+    var destination = document.querySelector(".item-destination[data-id='".concat(editedItem.id, "']"));
+    if (destination)
+        destination.textContent = editedItem.destination;
     var shortDescription = document.querySelector(".iteitem-short-description[data-id='".concat(editedItem.id, "']"));
-    if (shortDescription) {
+    if (shortDescription)
         shortDescription.textContent = editedItem.shortDescription;
-    }
     var price = document.querySelector(".item-price[data-id='".concat(editedItem.id, "']"));
-    if (price) {
+    if (price)
         price.textContent = "".concat(editedItem.price, " \u20AC");
-    }
 };
 // PRELOAD //
 window.ipcRendererCustom.onItemEdited(onItemEditedCb);
