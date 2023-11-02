@@ -6,4 +6,12 @@ electron_1.contextBridge.exposeInMainWorld("ipcRendererCustom", {
         console.log("check ! home.preload.ts onceInitData");
         electron_1.ipcRenderer.once("init-data", cb);
     },
+    sendAskShowNewItemForm: function () {
+        console.log("check ! home.preload.ts sendAskShowNewItemForm");
+        electron_1.ipcRenderer.send("ask-show-new-item-form");
+    },
+    onNewItemAdded: function (cb) {
+        console.log("check ! home.preload.ts onNewItemAdded");
+        electron_1.ipcRenderer.on('new-item-added', cb);
+    },
 });

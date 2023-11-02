@@ -33,6 +33,8 @@ var generateCard = function (travelItem) {
     shortDescription.textContent = travelItem.shortDescription;
     price.textContent = "".concat(travelItem.price, " \u20AC");
     btnDetail.textContent = "Show travel details";
+    // events
+    btnDetail.addEventListener("click", function () { });
     // apppend all components
     divCardBody.append(title, destination, shortDescription, price, btnDetail);
     divCard.append(img, divCardBody);
@@ -40,7 +42,8 @@ var generateCard = function (travelItem) {
     divCol.appendChild(divCard);
     divCardList === null || divCardList === void 0 ? void 0 : divCardList.appendChild(divCol);
 };
-//// ELECTRON COMMUNICATION ////
+//// ** ELECTRON COMMUNICATION ** ////
+// ONCE INIT DATA //
 var onceInitDataCb = function (e, travelItemList) {
     console.log("Check ! init-data cb", travelItemList);
     // update travel card list
@@ -48,4 +51,15 @@ var onceInitDataCb = function (e, travelItemList) {
         generateCard(travelItem);
     });
 };
-window.ipcRendererCustom.onceInitData(onceInitDataCb);
+window.ipcRendererCustom.onceInitData(onceInitDataCb); // preload
+// ON NEW ITEM ADDED //
+var onNewItemAddedCb = function (e, travelItem) {
+    generateCard(travelItem);
+};
+window.ipcRendererCustom.onNewItemAdded(onNewItemAddedCb); // preload
+//// ** JS EVENTS ** ////
+var btnAddTravel = document.querySelector(".ask-show-new-item-form");
+btnAddTravel.addEventListener("click", function (e) {
+    e.preventDefault();
+    window.ipcRendererCustom.sendAskShowNewItemForm();
+});

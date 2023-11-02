@@ -95,24 +95,69 @@
 
 # CHAINE DE CREATION DE LA HOME PAGE ET DE SES DATA: 
 
-> Mains.ts 
-> constructor() 
-> this.initDefaultListeners(); 
-> this.app.whenReady().then(...) 
-> generateMainWindow()
-> WindowManager.ts 
-> createWindow(templateName, templateData) 
-> win.loadFile(...)
+-> Mains.ts 
+-> constructor() 
+-> this.initDefaultListeners(); 
+-> this.app.whenReady().then(...) 
+-> generateMainWindow()
+-> WindowManager.ts 
+-> createWindow(templateName, templateData) 
+-> win.loadFile(...)
   .then(()=>{... win.webcontents.send(
     "init-data",
     travelItemService.getAll()
   )}); 
-> home.preload.ts 
-> onceInitData(cb) 
-> home.controller.ts
-> (window as any).ipcRendererCustom.onceInitData(onceInitDataCb);
-> onceInitDataCb = ((...)=>{...})
-> generateCard(travelItemList)
+-> home.preload.ts 
+-> onceInitData(cb) 
+-> home.controller.ts
+-> (window as any).ipcRendererCustom.onceInitData(onceInitDataCb);
+-> onceInitDataCb = ((...)=>{...})
+-> generateCard(travelItemList)
 
+# Commit N°2 : Chaine de création de la page home
+
+# Preparation à la page new-item
+
+- creation de src/contoller/new-item/new-item.controller.ts
+- creation de src/views/new-item/new-item.html
+- creation de app/preloads/new-item.preload.ts
+
+# Design de new-item.html
+
+- link bootstrap
+- script controller
+- header design
+- form design
+
+# Mains.ts : ouverture de la page
+
+- import ipcMain from "electron"
+- ipcMain.on("ask-show-new-item-form", ...)
+  - ipcMain.handle("add-new-item", ...)
+  - newItemWindow.on("closed", ...)
+  - newItemWindow.on("closed", ...)
+
+# home.controller.ts
+
+- btnAddTravel!.addEventListener("click, ...)
+- (window as any).ipcRendererCustom.onNewItemAdded(onNewItemAddedCb);
+
+# home.preload.ts
+
+- sendAskShowNewItemForm
+- onNewItemAdded
+
+# new-item.preload.ts
+
+- onceInitData
+- invokeAddNewItem
+
+# new-item.controller.ts
+
+- onceInitDataNewItemCb : inutile pour le moment mais pourra servir si évolution
+- form.addEventListener"submit", (e) => {...}
+  - (window as any).ipcRendererCustom.invokeAddNewItem(...)
+
+# Commit N°3 : Page new travel avec mécanique
 
 

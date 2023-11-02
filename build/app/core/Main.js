@@ -34,7 +34,7 @@ var Main = /** @class */ (function () {
         this.app = electron_1.app;
         this.initDefaultListeners();
     }
-    // INIT APPLICATION //
+    // ** INIT APPLICATION ** //
     Main.prototype.initDefaultListeners = function () {
         var _this = this;
         this.app.whenReady().then(function () {
@@ -53,12 +53,46 @@ var Main = /** @class */ (function () {
             }
         });
     };
-    // GENERATE MAIN WINDOW //
+    // ** GENERATE MAIN WINDOW ** //
     Main.prototype.generateMainWindow = function () {
         var travelItems = travel_item_service_1.default.getAll();
-        // HOME PAGE CREATE
+        // HOME PAGE CREATE //
         WindowManager_1.default.createWindow(WindowManager_1.WindowNameMapper.HOME, travelItems);
-        // HERE WINDOWS EVENTS
+        // !! HERE WINDOWS EVENTS !!  //
+        // ASK SHOW NEW ITEM FORM //
+        electron_1.ipcMain.on("ask-show-new-item-form", function (e, type) {
+            console.log("check ! new-item.controller.ts ipcMain.on(\"ask-show-new-item-form\", ...)");
+            if (WindowManager_1.default.hasWindow(WindowManager_1.WindowNameMapper.NEW_ITEM)) {
+                WindowManager_1.default.getWindow(WindowManager_1.WindowNameMapper.NEW_ITEM).show();
+            }
+            else {
+                WindowManager_1.default.createWindow(WindowManager_1.WindowNameMapper.NEW_ITEM, type, 600, 840);
+                var newItemWindow = WindowManager_1.default.getWindow(WindowManager_1.WindowNameMapper.NEW_ITEM);
+                // HANDLE ADD NEW-ITEM //
+                electron_1.ipcMain.handle("add-new-item", function (e, newItem) {
+                    console.log("check ! ipcMain.handle(\"add-new-item\", ...)");
+                    var travelItemList = travel_item_service_1.default.getAll();
+                    newItem.id = travelItemList.length > 0 ? travelItemList[travelItemList.length - 1].id + 1 : 1;
+                    travel_item_service_1.default.insert(newItem);
+                    if (WindowManager_1.default.hasWindow(WindowManager_1.WindowNameMapper.HOME)) {
+                        var homeWindwow = WindowManager_1.default.getWindow(WindowManager_1.WindowNameMapper.HOME);
+                        homeWindwow.webContents.send("new-item-added", newItem);
+                    }
+                    else {
+                        WindowManager_1.default.createWindow(WindowManager_1.WindowNameMapper.HOME, travelItemList);
+                    }
+                    return {
+                        success: true,
+                        msg: "The new travel has been added successfully",
+                    };
+                });
+                // ON CLOSED //
+                newItemWindow.on("closed", function () {
+                    console.log("check ! newItemWindow.on(\"closed\", ...)");
+                    electron_1.ipcMain.removeHandler("add-new-item");
+                });
+            }
+        });
     };
     return Main;
 }());
