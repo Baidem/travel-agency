@@ -5,7 +5,7 @@ const generateCard = (travelItem: any) => {
 
     // Constants
     const divCardList = document.querySelector("#card-list");
-    const divCol = document.createElement("div");
+    const divColMain = document.createElement("div");
     const divInter = document.createElement("div");
     const divCard = document.createElement("div");
     const divCardBody = document.createElement("div");
@@ -18,7 +18,7 @@ const generateCard = (travelItem: any) => {
     const btnEdit = document.createElement("button");
 
     // classList and args
-    divCol.classList.add("col-lg-4");
+    divColMain.classList.add("item-col-main", "col-lg-4");
     divCard.classList.add("card", "mb-3", "shadow", "bg-primary-subtle");;
     img.classList.add("item-img", "card-img-top");
     img.alt = "travel illustration";
@@ -41,6 +41,7 @@ const generateCard = (travelItem: any) => {
     btnEdit.textContent = "Edit travel details";
 
     // data-set
+    divColMain.dataset.id = travelItem.id;
     img.dataset.id = travelItem.id;
     title.dataset.id = travelItem.id;
     destination.dataset.id = travelItem.id;
@@ -61,12 +62,13 @@ const generateCard = (travelItem: any) => {
     divCardBody.append(title, destination, shortDescription, price, btnDetail, btnEdit);
     divCard.append(img, divCardBody);
     divInter.appendChild(divCard);
-    divCol.appendChild(divCard);
-    divCardList?.appendChild(divCol);
+    divColMain.appendChild(divCard);
+    divCardList?.appendChild(divColMain);
 }
 
 //// ** ELECTRON COMMUNICATION ** ////
-// ONCE INIT DATA //
+// -- ONCE INIT DATA -- //
+// CALL BACK //
 const onceInitDataCb = (e: any, travelItemList: any) => {
     console.log("Check ! init-data cb", travelItemList);
     // update travel card list
@@ -74,13 +76,25 @@ const onceInitDataCb = (e: any, travelItemList: any) => {
         generateCard(travelItem);
       });
 }
-(window as any).ipcRendererCustom.onceInitData(onceInitDataCb); // preload
+// PRELOAD //
+(window as any).ipcRendererCustom.onceInitData(onceInitDataCb);
 
 // -- ON NEW ITEM ADDED -- //
+// CALL BACK //
 const onNewItemAddedCb = (e: any, travelItem: any) => {
     generateCard(travelItem);
 }
-(window as any).ipcRendererCustom.onNewItemAdded(onNewItemAddedCb); // preload
+// PRELOAD //
+(window as any).ipcRendererCustom.onNewItemAdded(onNewItemAddedCb);
+
+// -- ON ITEM DELETED -- //
+// CALL BACK //
+const onItemDeletedCb = (e: any, id: number) => {
+    const colMain = document.querySelector(`.item-col-main[data-id='${id}']`);
+    colMain?.remove;
+}
+// PRELOAD //
+(window as any).ipcRendererCustom.onItemDeleted(onItemDeletedCb);
 
 // -- ON ITEM EDITED -- //
 // CALL BACK //

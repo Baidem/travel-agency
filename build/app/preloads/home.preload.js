@@ -14,6 +14,10 @@ electron_1.contextBridge.exposeInMainWorld("ipcRendererCustom", {
         console.log("check ! home.preload.ts onNewItemAdded");
         electron_1.ipcRenderer.on("new-item-added", cb);
     },
+    onItemDeleted: function (cb) {
+        console.log("check ! home.preload.ts onItemDeleted");
+        electron_1.ipcRenderer.on("item-deleted", cb);
+    },
     sendAskShowEditItemForm: function (id) {
         console.log("check ! home.preload.ts sendAskShowEditItemForm", id);
         electron_1.ipcRenderer.send("ask-show-edit-item-form", id);

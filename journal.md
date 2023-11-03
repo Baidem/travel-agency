@@ -276,3 +276,38 @@
 
 # COMMIT N°5 : bouton edit sur la page détail fonctionne, edit submit avec mise à jour sur home et détail ok !
 
+# detail-item.controller.ts
+
+- btnDelete!.addEventListener("click", (e) => {...})
+  - e.e.preventDefault();
+  - (window as any).ipcRendererCustom.invokeDeleteItem(travelItem.id, invokeDeleteItemCb);
+- const invokeDeleteItemCb = (res: any) => {...}
+
+# detail-preload.ts
+
+- invokeDeleteItem: (id: number, cb: any) => {...}
+  - ipcRenderer
+            .invoke('delete-item', id)
+            .then(cb)
+
+# Main.ts
+
+- ipcMain.handle('delete-item', (e: any, id: number) => {...})
+
+# home.preload.ts
+
+- onItemDeleted: (cb: any) => {...}
+  - ipcRenderer.on("item-deleted", cb);
+  
+# home.controller.ts
+
+- onItemDeletedCb
+- (window as any).ipcRendererCustom.onItemDeleted(onItemDeletedCb);
+
+# COMMIT N°6 : Break point
+
+### TODO
+
+- Delete : alert de confirmation, supression des données et mise à jour de l'affichage
+- home : enlever les bouton et ne garder que l'événement "voir détail" sur le click de la card
+- Main : nettoyer l'ancien edit

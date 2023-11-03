@@ -60,17 +60,17 @@ var Main = /** @class */ (function () {
         WindowManager_1.default.createWindow(WindowManager_1.WindowNameMapper.HOME, travelItems);
         // !! HERE WINDOWS EVENTS !! //
         // ASK SHOW NEW ITEM FORM //
-        electron_1.ipcMain.on("ask-show-new-item-form", function (e, type) {
-            console.log("Check! new-item.controller.ts ipcMain.on('ask-show-new-item-form', ...)");
+        electron_1.ipcMain.on("ask-show-new-item-form", function (e) {
+            console.log("Check! Main.ts ipcMain.on('ask-show-new-item-form', ...)");
             if (WindowManager_1.default.hasWindow(WindowManager_1.WindowNameMapper.NEW_ITEM)) {
                 WindowManager_1.default.getWindow(WindowManager_1.WindowNameMapper.NEW_ITEM).show();
             }
             else {
-                WindowManager_1.default.createWindow(WindowManager_1.WindowNameMapper.NEW_ITEM, type, 600, 840);
+                WindowManager_1.default.createWindow(WindowManager_1.WindowNameMapper.NEW_ITEM, 600, 840);
                 var newItemWindow = WindowManager_1.default.getWindow(WindowManager_1.WindowNameMapper.NEW_ITEM);
                 // ** HANDLE ADD NEW-ITEM ** //
                 electron_1.ipcMain.handle("add-new-item", function (e, newItem) {
-                    console.log("Check! ipcMain.handle('add-new-item', ...)", newItem.id);
+                    console.log("Check! Main.ts ipcMain.handle('add-new-item', ...)", newItem.id);
                     var travelItemList = travel_item_service_1.default.getAll();
                     newItem.id = travelItemList.length > 0 ? travelItemList[travelItemList.length - 1].id + 1 : 1;
                     console.log("newItem.id", newItem.id);
@@ -176,7 +176,7 @@ var Main = /** @class */ (function () {
                         var travelItemList = travel_item_service_1.default.getAll();
                         WindowManager_1.default.createWindow(WindowManager_1.WindowNameMapper.HOME, travelItemList);
                     }
-                    // SEND ITEM-EDITED TO DETAIL WINDOW OR CREATE A NEW ONE //
+                    // SEND DETAIL-ITEM-EDITED TO DETAIL WINDOW OR CREATE A NEW ONE //
                     if (WindowManager_1.default.hasWindow(WindowManager_1.WindowNameMapper.DETAIL_ITEM)) {
                         var detailWindow = WindowManager_1.default.getWindow(WindowManager_1.WindowNameMapper.DETAIL_ITEM);
                         detailWindow.webContents.send('detail-item-edited', editedItem);
@@ -212,29 +212,34 @@ var Main = /** @class */ (function () {
                 }
                 WindowManager_1.default.createWindow(WindowManager_1.WindowNameMapper.DETAIL_ITEM, travelItem, 1000, 600);
                 var detailWindow = WindowManager_1.default.getWindow(WindowManager_1.WindowNameMapper.DETAIL_ITEM);
-                // HANDLE EDIT-ITEM //
-                // ipcMain.handle('edit-item', (e: any, editedItem: any) => {
-                //     console.log("Check! ipcMain.handle('edit-item', ...)", editedItem.id);
-                //     // Update travel list
-                //     travelItemService.update(editedItem);
-                //     // SEND ITEM-EDITED TO HOME WINDOW OR CREATE A NEW ONE //
-                //     if (windowManager.hasWindow(WindowNameMapper.HOME)) {
-                //         const homeWindow = windowManager.getWindow(WindowNameMapper.HOME);
-                //         homeWindow.webContents.send('item-edited', editedItem);
-                //     } else {
-                //         const travelItemList = travelItemService.getAll();
-                //         windowManager.createWindow(WindowNameMapper.HOME, travelItemList);
-                //     }
-                //     // RETURN SUCCESS AND MESSAGE //
-                //     return {
-                //         success: true,
-                //         msg: 'The change was made successfully.'
-                //     };
-                // });
-                // // ON CLOSED //
-                // detailWindow.on('closed', () => {
-                //     ipcMain.removeHandler('edit-item');
-                // });
+                // -- HANDLE DELETE-ITEM -- //
+                electron_1.ipcMain.handle('delete-item', function (e, id) {
+                    // DIALOG BOX //
+                    var choice = electron_1.dialog.showMessageBoxSync({
+                        title: 'Delete item',
+                        message: 'Are you sure you want to delete the element permanently?',
+                        buttons: ['Cancel', 'Yes']
+                    });
+                    // YES //
+                    if (choice) {
+                        travel_item_service_1.default.delete(id);
+                        if (WindowManager_1.default.hasWindow(WindowManager_1.WindowNameMapper.HOME)) {
+                            var homeWindow = WindowManager_1.default.getWindow(WindowManager_1.WindowNameMapper.HOME);
+                            homeWindow.webContents.send('item-deleted', id);
+                        }
+                        else {
+                            var travelItemList = travel_item_service_1.default.getAll();
+                            WindowManager_1.default.createWindow(WindowManager_1.WindowNameMapper.HOME, travelItemList);
+                        }
+                        return { success: true };
+                    }
+                    // CANCEL //
+                    return { success: false };
+                });
+                // ON CLOSED //
+                detailWindow.on('closed', function () {
+                    electron_1.ipcMain.removeHandler('delete-item');
+                });
             }
         });
     };

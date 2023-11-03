@@ -1,4 +1,4 @@
-import { BrowserWindow, app, ipcMain } from "electron";
+import { BrowserWindow, app, ipcMain, dialog} from "electron";
 import App = Electron.App;
 import windowManager, { WindowNameMapper } from "./WindowManager";
 import travelItemService from "../services/travel-item.service";
@@ -41,18 +41,18 @@ export default class Main {
 
         // !! HERE WINDOWS EVENTS !! //
         // ASK SHOW NEW ITEM FORM //
-        ipcMain.on("ask-show-new-item-form", (e: any, type: string) => {
-            console.log("Check! new-item.controller.ts ipcMain.on('ask-show-new-item-form', ...)");
+        ipcMain.on("ask-show-new-item-form", (e: any) => {
+            console.log("Check! Main.ts ipcMain.on('ask-show-new-item-form', ...)");
             if (windowManager.hasWindow(WindowNameMapper.NEW_ITEM)) {
                 windowManager.getWindow(WindowNameMapper.NEW_ITEM).show();
             } else {
-                windowManager.createWindow(WindowNameMapper.NEW_ITEM, type, 600, 840);
+                windowManager.createWindow(WindowNameMapper.NEW_ITEM, 600, 840);
 
                 const newItemWindow = windowManager.getWindow(WindowNameMapper.NEW_ITEM);
                 
                 // ** HANDLE ADD NEW-ITEM ** //
                 ipcMain.handle("add-new-item", (e, newItem) => {
-                    console.log("Check! ipcMain.handle('add-new-item', ...)", newItem.id);
+                    console.log("Check! Main.ts ipcMain.handle('add-new-item', ...)");
                     const travelItemList = travelItemService.getAll();
                     newItem.id = travelItemList.length > 0 ? travelItemList[travelItemList.length - 1].id + 1 : 1;
                     console.log("newItem.id", newItem.id);
@@ -175,7 +175,7 @@ export default class Main {
                         windowManager.createWindow(WindowNameMapper.HOME, travelItemList);
                     }
 
-                    // SEND ITEM-EDITED TO DETAIL WINDOW OR CREATE A NEW ONE //
+                    // SEND DETAIL-ITEM-EDITED TO DETAIL WINDOW OR CREATE A NEW ONE //
                     if (windowManager.hasWindow(WindowNameMapper.DETAIL_ITEM)) {
                         const detailWindow = windowManager.getWindow(WindowNameMapper.DETAIL_ITEM);
                         detailWindow.webContents.send('detail-item-edited', editedItem);
@@ -218,33 +218,35 @@ export default class Main {
         
                 const detailWindow = windowManager.getWindow(WindowNameMapper.DETAIL_ITEM);
                 
-                // HANDLE EDIT-ITEM //
-                // ipcMain.handle('edit-item', (e: any, editedItem: any) => {
-                //     console.log("Check! ipcMain.handle('edit-item', ...)", editedItem.id);
-                    
-                //     // Update travel list
-                //     travelItemService.update(editedItem);
-            
-                //     // SEND ITEM-EDITED TO HOME WINDOW OR CREATE A NEW ONE //
-                //     if (windowManager.hasWindow(WindowNameMapper.HOME)) {
-                //         const homeWindow = windowManager.getWindow(WindowNameMapper.HOME);
-                //         homeWindow.webContents.send('item-edited', editedItem);
-                //     } else {
-                //         const travelItemList = travelItemService.getAll();
-                //         windowManager.createWindow(WindowNameMapper.HOME, travelItemList);
-                //     }
-        
-                //     // RETURN SUCCESS AND MESSAGE //
-                //     return {
-                //         success: true,
-                //         msg: 'The change was made successfully.'
-                //     };
-                // });
+                // -- HANDLE DELETE-ITEM -- //
+                ipcMain.handle('delete-item', (e: any, id: number) => {
+                    // DIALOG BOX //
+                    const choice = dialog.showMessageBoxSync({
+                        title: 'Delete item',
+                        message: 'Are you sure you want to delete the element permanently?',
+                        buttons: ['Cancel', 'Yes']
+                    })
+                    // YES //
+                    if(choice) {
+                        travelItemService.delete(id)
+                        if(windowManager.hasWindow(WindowNameMapper.HOME)) {
+                            const homeWindow = windowManager.getWindow(WindowNameMapper.HOME)
+                            homeWindow.webContents.send('item-deleted', id)
+                        }
+                        else {
+                            const travelItemList = travelItemService.getAll()
+                            windowManager.createWindow(WindowNameMapper.HOME, travelItemList)
+                        }
+                        return { success: true }
+                    }
+                    // CANCEL //
+                    return { success: false }
+                });
                 
-                // // ON CLOSED //
-                // detailWindow.on('closed', () => {
-                //     ipcMain.removeHandler('edit-item');
-                // });
+                // ON CLOSED //
+                detailWindow.on('closed', () => {
+                    ipcMain.removeHandler('delete-item');
+                });
             }
         });
 

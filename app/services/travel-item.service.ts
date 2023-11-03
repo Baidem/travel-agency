@@ -18,7 +18,7 @@ class travelItemService {
     }
 
     insert(newItem: TravelItem): void {
-        console.log("travel-item.service.ts insert", newItem.id);
+        console.log("Check ! travel-item.service.ts insert(newItem)", newItem.id);
         this.travelItems.push(newItem);
     }
 

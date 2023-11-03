@@ -13,6 +13,12 @@ contextBridge.exposeInMainWorld("ipcRendererCustom", {
         console.log("check ! home.preload.ts sendAskDisplayEditItemForm", id);
         ipcRenderer.send("ask-display-edit-item-form", id);
     },
+    invokeDeleteItem: (id: number, cb: any) => {
+        ipcRenderer
+            .invoke('delete-item', id)
+            .then(cb)
+    }
+
 });
 
 

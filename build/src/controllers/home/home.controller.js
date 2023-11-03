@@ -4,7 +4,7 @@ console.log("check ! home.controller.ts");
 var generateCard = function (travelItem) {
     // Constants
     var divCardList = document.querySelector("#card-list");
-    var divCol = document.createElement("div");
+    var divColMain = document.createElement("div");
     var divInter = document.createElement("div");
     var divCard = document.createElement("div");
     var divCardBody = document.createElement("div");
@@ -16,7 +16,7 @@ var generateCard = function (travelItem) {
     var btnDetail = document.createElement("button");
     var btnEdit = document.createElement("button");
     // classList and args
-    divCol.classList.add("col-lg-4");
+    divColMain.classList.add("item-col-main", "col-lg-4");
     divCard.classList.add("card", "mb-3", "shadow", "bg-primary-subtle");
     ;
     img.classList.add("item-img", "card-img-top");
@@ -38,6 +38,7 @@ var generateCard = function (travelItem) {
     btnDetail.textContent = "Show travel details";
     btnEdit.textContent = "Edit travel details";
     // data-set
+    divColMain.dataset.id = travelItem.id;
     img.dataset.id = travelItem.id;
     title.dataset.id = travelItem.id;
     destination.dataset.id = travelItem.id;
@@ -56,11 +57,12 @@ var generateCard = function (travelItem) {
     divCardBody.append(title, destination, shortDescription, price, btnDetail, btnEdit);
     divCard.append(img, divCardBody);
     divInter.appendChild(divCard);
-    divCol.appendChild(divCard);
-    divCardList === null || divCardList === void 0 ? void 0 : divCardList.appendChild(divCol);
+    divColMain.appendChild(divCard);
+    divCardList === null || divCardList === void 0 ? void 0 : divCardList.appendChild(divColMain);
 };
 //// ** ELECTRON COMMUNICATION ** ////
-// ONCE INIT DATA //
+// -- ONCE INIT DATA -- //
+// CALL BACK //
 var onceInitDataCb = function (e, travelItemList) {
     console.log("Check ! init-data cb", travelItemList);
     // update travel card list
@@ -68,12 +70,23 @@ var onceInitDataCb = function (e, travelItemList) {
         generateCard(travelItem);
     });
 };
-window.ipcRendererCustom.onceInitData(onceInitDataCb); // preload
+// PRELOAD //
+window.ipcRendererCustom.onceInitData(onceInitDataCb);
 // -- ON NEW ITEM ADDED -- //
+// CALL BACK //
 var onNewItemAddedCb = function (e, travelItem) {
     generateCard(travelItem);
 };
-window.ipcRendererCustom.onNewItemAdded(onNewItemAddedCb); // preload
+// PRELOAD //
+window.ipcRendererCustom.onNewItemAdded(onNewItemAddedCb);
+// -- ON ITEM DELETED -- //
+// CALL BACK //
+var onItemDeletedCb = function (e, id) {
+    var colMain = document.querySelector(".item-col-main[data-id='".concat(id, "']"));
+    colMain === null || colMain === void 0 ? void 0 : colMain.remove;
+};
+// PRELOAD //
+window.ipcRendererCustom.onItemDeleted(onItemDeletedCb);
 // -- ON ITEM EDITED -- //
 // CALL BACK //
 var onItemEditedCb = function (e, editedItem) {

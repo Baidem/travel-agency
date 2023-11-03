@@ -1,44 +1,36 @@
 console.log("check ! detail-item.controller.ts");
 
-// -- GENERATE HTML CARD -- //
-const generateTravelCard = (travelItem: any) => {
-    console.log("Check ! detail-item.controller.ts generateTravelCard", travelItem);
-    
-    // Constants
-    const image = document.querySelector("img");
-    const title = document.querySelector("#title");
-    const destination = document.querySelector("#destination");
-    const shortDescription = document.querySelector("#short-description");
-    const longDescription = document.querySelector("#long-description");
-    const price = document.querySelector("#price");
-    const btnEdit = document.querySelector("#btn-edit");
-    const btnDelete = document.querySelector("#btn-delete");
-    
-    // Text content
-    image!.src = travelItem.image;
-    title!.textContent = travelItem.title;
-    destination!.textContent = travelItem.destination;
-    shortDescription!.textContent = travelItem.shortDescription;
-    longDescription!.textContent = travelItem.longDescription;
-    price!.textContent = travelItem.price;
+let globalTravelItem: any;
 
-    // events
-    btnEdit!.addEventListener("click", (e) => {
-        e.preventDefault();
-        (window as any).ipcRendererCustom.sendAskDisplayEditItemForm(travelItem.id);
-    })
-    btnDelete!.addEventListener("click", (e) => {
-        e.preventDefault();
-        //!!!!!
-    })
+// -- UPDATE HTML CARD -- //
+function updateTravelCard(globalTravelItem: any) {
+    console.log("Check ! detail-item.controller.ts generateTravelCard", globalTravelItem);
+    if (globalTravelItem) {
+        // Constants
+        const image = document.querySelector("img");
+        const title = document.querySelector("#title");
+        const destination = document.querySelector("#destination");
+        const shortDescription = document.querySelector("#short-description");
+        const longDescription = document.querySelector("#long-description");
+        const price = document.querySelector("#price");
+
+        // Text content
+        image!.src = globalTravelItem.image;
+        title!.textContent = globalTravelItem.title;
+        destination!.textContent = globalTravelItem.destination;
+        shortDescription!.textContent = globalTravelItem.shortDescription;
+        longDescription!.textContent = globalTravelItem.longDescription;
+        price!.textContent = `${globalTravelItem.price} €`;
+    }
 }
 
 //// ** ELECTRON COMMUNICATION ** ////
-// ONCE INIT DATA //
+// -- ONCE INIT DATA -- //
 const onceInitDataDetailItemCb = (e: any, travelItem: any) => {
     console.log("Check ! init-data cb", travelItem);
     // update travel card
-    generateTravelCard(travelItem);
+    globalTravelItem = travelItem;
+    updateTravelCard(globalTravelItem);
 }
 (window as any).ipcRendererCustom.onceInitData(onceInitDataDetailItemCb); // preload
 
@@ -46,22 +38,44 @@ const onceInitDataDetailItemCb = (e: any, travelItem: any) => {
 // CALL BACK //
 const onDetailItemEditedCb = (e: any, editedItem: any) => {
     console.log("check ! detail-item.controller.ts const onItemEditedCb = (e: any, editedItem: any) => {...}", editedItem.id);
-    
-    const image = document.querySelector('img');
-    if(image) image.src = editedItem.image;
-
-    const title = document.querySelector("#title");
-    if(title) title.textContent = editedItem.title;
-
-    const shortDescription = document.querySelector("#short-description")
-    if(shortDescription) shortDescription.textContent = editedItem.shortDescription;
-
-    const longDescription = document.querySelector("#long-description")
-    if(longDescription) longDescription.textContent = editedItem.shortDescription;
-
-    const price = document.querySelector("#price")
-    if(price) price.textContent = `${editedItem.price} €`;
+    // update travel card
+    globalTravelItem = editedItem;
+    updateTravelCard(globalTravelItem);
 }
 // PRELOAD //
 (window as any).ipcRendererCustom.onDetailItemEdited(onDetailItemEditedCb);
+
+
+//// ** JS EVENTS ** ////
+const btnEdit = document.querySelector("#btn-edit");
+const btnDelete = document.querySelector("#btn-delete");
+
+// -- SEND ASK DISPLAY EDIT ITEM FORM -- //
+btnEdit!.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (globalTravelItem){
+        (window as any).ipcRendererCustom.sendAskDisplayEditItemForm(globalTravelItem.id);
+    }
+})
+
+// -- INVOKE DELETEITEM -- //
+btnDelete!.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (globalTravelItem){
+        // PRELOAD //
+        (window as any).ipcRendererCustom.invokeDeleteItem(globalTravelItem.id, invokeDeleteItemCb);
+    }
+})
+// CALL BACK //
+const invokeDeleteItemCb = (res: any) => {
+    const divMessage = document.querySelector('#response-message')! as HTMLElement;
+    divMessage.textContent = res.msg;
+    divMessage.hidden = false;
+
+    divMessage.classList.remove('alert-success', 'alert-danger');
+    res.success ? divMessage.classList.add('alert-warning') : divMessage.classList.add('alert-danger');
+
+};
+    
+
 

@@ -13,6 +13,10 @@ contextBridge.exposeInMainWorld("ipcRendererCustom", {
         console.log("check ! home.preload.ts onNewItemAdded");
         ipcRenderer.on("new-item-added", cb);
     },
+    onItemDeleted: (cb: any) => {
+        console.log("check ! home.preload.ts onItemDeleted");
+        ipcRenderer.on("item-deleted", cb);
+    },
     sendAskShowEditItemForm: (id: number) => {
         console.log("check ! home.preload.ts sendAskShowEditItemForm", id);
         ipcRenderer.send("ask-show-edit-item-form", id);

@@ -1,61 +1,68 @@
 "use strict";
 console.log("check ! detail-item.controller.ts");
-// -- GENERATE HTML CARD -- //
-var generateTravelCard = function (travelItem) {
-    console.log("Check ! detail-item.controller.ts generateTravelCard", travelItem);
-    // Constants
-    var image = document.querySelector("img");
-    var title = document.querySelector("#title");
-    var destination = document.querySelector("#destination");
-    var shortDescription = document.querySelector("#short-description");
-    var longDescription = document.querySelector("#long-description");
-    var price = document.querySelector("#price");
-    var btnEdit = document.querySelector("#btn-edit");
-    var btnDelete = document.querySelector("#btn-delete");
-    // Text content
-    image.src = travelItem.image;
-    title.textContent = travelItem.title;
-    destination.textContent = travelItem.destination;
-    shortDescription.textContent = travelItem.shortDescription;
-    longDescription.textContent = travelItem.longDescription;
-    price.textContent = travelItem.price;
-    // events
-    btnEdit.addEventListener("click", function (e) {
-        e.preventDefault();
-        window.ipcRendererCustom.sendAskDisplayEditItemForm(travelItem.id);
-    });
-    btnDelete.addEventListener("click", function (e) {
-        e.preventDefault();
-        //!!!!!
-    });
-};
+var globalTravelItem;
+// -- UPDATE HTML CARD -- //
+function updateTravelCard(globalTravelItem) {
+    console.log("Check ! detail-item.controller.ts generateTravelCard", globalTravelItem);
+    if (globalTravelItem) {
+        // Constants
+        var image = document.querySelector("img");
+        var title = document.querySelector("#title");
+        var destination = document.querySelector("#destination");
+        var shortDescription = document.querySelector("#short-description");
+        var longDescription = document.querySelector("#long-description");
+        var price = document.querySelector("#price");
+        // Text content
+        image.src = globalTravelItem.image;
+        title.textContent = globalTravelItem.title;
+        destination.textContent = globalTravelItem.destination;
+        shortDescription.textContent = globalTravelItem.shortDescription;
+        longDescription.textContent = globalTravelItem.longDescription;
+        price.textContent = "".concat(globalTravelItem.price, " \u20AC");
+    }
+}
 //// ** ELECTRON COMMUNICATION ** ////
-// ONCE INIT DATA //
+// -- ONCE INIT DATA -- //
 var onceInitDataDetailItemCb = function (e, travelItem) {
     console.log("Check ! init-data cb", travelItem);
     // update travel card
-    generateTravelCard(travelItem);
+    globalTravelItem = travelItem;
+    updateTravelCard(globalTravelItem);
 };
 window.ipcRendererCustom.onceInitData(onceInitDataDetailItemCb); // preload
 // -- ON ITEM EDITED -- //
 // CALL BACK //
 var onDetailItemEditedCb = function (e, editedItem) {
     console.log("check ! detail-item.controller.ts const onItemEditedCb = (e: any, editedItem: any) => {...}", editedItem.id);
-    var image = document.querySelector('img');
-    if (image)
-        image.src = editedItem.image;
-    var title = document.querySelector("#title");
-    if (title)
-        title.textContent = editedItem.title;
-    var shortDescription = document.querySelector("#short-description");
-    if (shortDescription)
-        shortDescription.textContent = editedItem.shortDescription;
-    var longDescription = document.querySelector("#long-description");
-    if (longDescription)
-        longDescription.textContent = editedItem.shortDescription;
-    var price = document.querySelector("#price");
-    if (price)
-        price.textContent = "".concat(editedItem.price, " \u20AC");
+    // update travel card
+    globalTravelItem = editedItem;
+    updateTravelCard(globalTravelItem);
 };
 // PRELOAD //
 window.ipcRendererCustom.onDetailItemEdited(onDetailItemEditedCb);
+//// ** JS EVENTS ** ////
+var btnEdit = document.querySelector("#btn-edit");
+var btnDelete = document.querySelector("#btn-delete");
+// -- SEND ASK DISPLAY EDIT ITEM FORM -- //
+btnEdit.addEventListener("click", function (e) {
+    e.preventDefault();
+    if (globalTravelItem) {
+        window.ipcRendererCustom.sendAskDisplayEditItemForm(globalTravelItem.id);
+    }
+});
+// -- INVOKE DELETEITEM -- //
+btnDelete.addEventListener("click", function (e) {
+    e.preventDefault();
+    if (globalTravelItem) {
+        // PRELOAD //
+        window.ipcRendererCustom.invokeDeleteItem(globalTravelItem.id, invokeDeleteItemCb);
+    }
+});
+// CALL BACK //
+var invokeDeleteItemCb = function (res) {
+    var divMessage = document.querySelector('#response-message');
+    divMessage.textContent = res.msg;
+    divMessage.hidden = false;
+    divMessage.classList.remove('alert-success', 'alert-danger');
+    res.success ? divMessage.classList.add('alert-warning') : divMessage.classList.add('alert-danger');
+};

@@ -14,4 +14,9 @@ electron_1.contextBridge.exposeInMainWorld("ipcRendererCustom", {
         console.log("check ! home.preload.ts sendAskDisplayEditItemForm", id);
         electron_1.ipcRenderer.send("ask-display-edit-item-form", id);
     },
+    invokeDeleteItem: function (id, cb) {
+        electron_1.ipcRenderer
+            .invoke('delete-item', id)
+            .then(cb);
+    }
 });
