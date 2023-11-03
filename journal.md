@@ -306,8 +306,21 @@
 
 # COMMIT N°6 : Break point
 
+# Chaine de suppression d'un élément
+
+* bouton delete : detail-item.html id="btn-delete"
+* detail-item.controller.ts : btnDelete!.addEventListener("click", (e) => {...})
+* detail-item.preload.ts: invokeDeleteItem(globalTravelItem.id, invokeDeleteItemCb)
+* Mains.ts : ipcMain.handle('delete-item', ...)
+  * homeWindow.webContents.send('item-deleted', id)
+    * home.preload.ts : onItemDeleted: (cb: any) => {...}
+    * then : home.controller.ts : onItemDeletedCb : colMain!.remove();
+  * return success bool et message
+* detail-item.preload.ts : invokeDeleteItem : then(cb)
+* detail-item.controller.ts : invokeDeleteItemCb : rendu du message et supp btns
+
+# COMMIT N°7 : ALL FEATURES
+
 ### TODO
 
-- Delete : alert de confirmation, supression des données et mise à jour de l'affichage
-- home : enlever les bouton et ne garder que l'événement "voir détail" sur le click de la card
-- Main : nettoyer l'ancien edit
+- clean code

@@ -23,10 +23,19 @@
                             <div class="navbar navbar-light">
                                 <div class="container-fluid justify-content-start">
                                     <!--/* Here Title */-->
-                                    <h1 class="p-2">
+                                    <h1 class="p-2 my-auto">
                                         <i class="fa-solid fa-compass"></i>
                                         Travel agency
                                     </h1>
+                                    <button id="btn-edit" class="col-auto btn btn-sm btn-outline-dark ask-show-new-item-form me-2 my-auto shadow" type="button">
+                                        <i class="fa-regular fa-pen-to-square"></i>
+                                        Edit this travel
+                                    </button>
+                                    <button id="btn-delete" class="col-auto btn btn-sm btn-outline-danger ask-show-new-item-form me-2 my-auto shadow" type="button">
+                                        <i class="fa-solid fa-trash"></i>
+                                        Delete this travel
+                                    </button>
+                                    <div id="response-message" class="alert py-1 my-auto shadow" hidden></div>
                                 </div>
                             </div>
                         </div>
@@ -43,23 +52,24 @@
                     <div class="col-12">
                         <div class="">
                             <!--/* Here card of travel details */-->
-                            <div class="card mb-3 bg-primary-subtle shadow" >
+                            <div class="card mb-3 bg-primary-subtle shadow" style="min-height: 300px">
                                 <div class="row g-0">
                                     <div class="col-md-4">
-                                        <img src="" class="img-fluid rounded-start h-100" alt="travel illustration">
+                                        <img src="" class="img-fluid rounded-start h-100" alt="travel illustration" style="min-height: 300px;">
                                     </div>
                                     <div class="col-md-8">
                                         <div class="card-body">
-                                            <div id="response-message" class="alert py-3" hidden></div>
-                                            <h5 id="title" class="card-title"></h5>
-                                            <p id="destination" class="card-text"></p>
-                                            <p id="short-description" class="card-text"><small class="text-muted"></small></p>
-                                            <p id="long-description" class="card-text"></p>
-                                            <p id="price" class="card-text"></p>
                                             <div class="row">
-                                                <button id="btn-edit" class="col-auto btn btn-sm btn-outline-dark ask-show-new-item-form me-2" type="button">EDIT</button>
-                                                <button id="btn-delete" class="col-auto btn btn-sm btn-outline-danger ask-show-new-item-form" type="button">DELETE</button>
+                                                <i class="col-auto fa-solid fa-compass text-primary fs-4"></i>
+                                                <h5 id="title" class="col-auto card-title"></h5>
                                             </div>
+                                            <div class="row">
+                                                <i class="col-auto fa-solid fa-map-location-dot text-primary fs-5"></i>
+                                                <p id="destination" class="col-auto card-text"></p>
+                                            </div>
+                                            <p id="short-description" class="card-text"><small class="text-muted"></small></p>
+                                            <p id="long-description" class="card-text" style="min-height: 9rem"></p>
+                                            <p id="price" class="card-text fs-4 text-danger text-end"></p>                                          
                                         </div>
                                     </div>
                                 </div>
@@ -72,6 +82,7 @@
         </section>
     </main>
 
+    <script src="../../../../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="../../controllers/detail-item/detail-item.controller.js"></script>
 
 </body>

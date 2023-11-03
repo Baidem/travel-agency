@@ -1,5 +1,3 @@
-console.log("check ! detail-item.controller.ts");
-
 let globalTravelItem: any;
 
 // -- UPDATE HTML CARD -- //
@@ -20,7 +18,7 @@ function updateTravelCard(globalTravelItem: any) {
         destination!.textContent = globalTravelItem.destination;
         shortDescription!.textContent = globalTravelItem.shortDescription;
         longDescription!.textContent = globalTravelItem.longDescription;
-        price!.textContent = `${globalTravelItem.price} €`;
+        price!.textContent = `${globalTravelItem.price.toFixed(2)} €`;
     }
 }
 
@@ -66,16 +64,19 @@ btnDelete!.addEventListener("click", (e) => {
         (window as any).ipcRendererCustom.invokeDeleteItem(globalTravelItem.id, invokeDeleteItemCb);
     }
 })
-// CALL BACK //
+// CALL BACK THEN//
 const invokeDeleteItemCb = (res: any) => {
+    console.log("check ! detail-item.controller.ts const invokeDeleteItemCb = (res: any)");
+
     const divMessage = document.querySelector('#response-message')! as HTMLElement;
     divMessage.textContent = res.msg;
     divMessage.hidden = false;
 
-    divMessage.classList.remove('alert-success', 'alert-danger');
+    divMessage.classList.remove('alert-warning', 'alert-danger');
     res.success ? divMessage.classList.add('alert-warning') : divMessage.classList.add('alert-danger');
 
+    if (res.success) {
+        btnDelete?.remove();
+        btnEdit?.remove();
+    }
 };
-    
-
-

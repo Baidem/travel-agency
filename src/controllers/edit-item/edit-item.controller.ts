@@ -38,7 +38,11 @@ editForm.addEventListener('submit', (e) => {
     itemToEditGlobal.destination = dataForm.get('destination');
     itemToEditGlobal.shortDescription = dataForm.get('shortDescription');
     itemToEditGlobal.longDescription = dataForm.get('longDescription');
-    itemToEditGlobal.price = parseFloat(dataForm.get('price') as string);
+
+    let price: any = dataForm.get('price');
+    price = price ? (!isNaN(price) ? parseFloat(price.replace(',', '.')) : 0) : 0;
+
+    itemToEditGlobal.price = price;
 
     // INVOKE EDIT ITEM //
     (window as any).ipcRendererCustom.invokeEditItem(itemToEditGlobal, (res: any) => {

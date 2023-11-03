@@ -23,10 +23,11 @@
                             <div class="navbar navbar-light">
                                 <div class="container-fluid justify-content-start">
                                     <!--/* Here Title */-->
-                                    <h1 class="p-2">
+                                    <h1 class="p-2 me-2 my-auto">
                                         <i class="fa-solid fa-compass"></i>
                                         Travel agency
                                     </h1>
+                                    <div id="response-message" class="alert py-1 shadow my-auto" hidden></div>
                                 </div>
                             </div>
                         </div>
@@ -46,35 +47,39 @@
                                 <!-- <img src="https://picsum.photos/200" class="card-img-top" alt="..."> -->
                                 <div class="card-body">
                                     <h5 class="card-title">Edit travel</h5>
-                                    <div id="response-message" class="alert py-3" hidden></div>
                                     <!--/* Here form */-->
                                     <form id="edit-item-form">
                                         <fieldset>
-                                            <div class="mb-3">
-                                                <label for="imageUrlInput" class="form-label fs-6">Image URL</label>
-                                                <input type="text" id="imageUrlInput" class="form-control" placeholder="image" name="image">
+                                            <div class="form-floating mb-3">
+                                                <input type="text" id="imageUrlInput" class="form-control" name="image"  placeholder="Image URL">
+                                                <label for="imageUrlInput"><i class="fa-regular fa-image me-2"></i>Image URL</label>
                                             </div>
-                                            <div class="mb-3">
-                                                <label for="titleInput" class="form-label fs-6">Title</label>
-                                                <input type="text" id="titleInput" class="form-control" placeholder="title" name="title">
+                                            <div class="form-floating mb-3">
+                                                <input type="text" id="titleInput" class="form-control" name="title" placeholder="Title">
+                                                <label for="titleInput"><i class="fa-solid fa-heading me-2"></i>Title</label>
                                             </div>
-                                            <div class="mb-3">
-                                                <label for="destinationInput" class="form-label fs-6">Destination</label>
+                                            <div class="form-floating mb-3">
                                                 <input type="text" id="destinationInput" class="form-control" placeholder="destination" name="destination">
+                                                <label for="destinationInput"><i class="fa-solid fa-map-location-dot me-2"></i>Destination</label>
                                             </div>
-                                            <div class="mb-3">
-                                                <label for="shortDescriptionInput" class="form-label fs-6">Short description</label>
-                                                <textarea id="shortDescriptionInput" class="form-control" placeholder="short description" name="shortDescription"></textarea>
+                                            <div class="form-floating mb-3">
+                                                <textarea id="shortDescriptionInput" class="form-control" placeholder="short description" name="shortDescription" style="height: 4rem"></textarea>
+                                                <label for="shortDescriptionInput"><i class="fa-solid fa-tag me-2"></i></i>Short description</label>
                                             </div>
-                                            <div class="mb-3">
-                                                <label for="longDescriptionInput" class="form-label fs-6">Long description</label>
-                                                <textarea id="longDescriptionInput" class="form-control" placeholder="long description" name="longDescription"></textarea>
+                                            <div class="form-floating mb-3">
+                                                <textarea id="longDescriptionInput" class="form-control" placeholder="long description" name="longDescription" style="height: 9rem"></textarea>
+                                                <label for="longDescriptionInput"><i class="fa-solid fa-feather me-2"></i>Long description</label>
                                             </div>
-                                            <div class="mb-3">
-                                                <label for="priceInput" class="form-label fs-6">Price</label>
-                                                <input type="number" id="priceInput" class="form-control" placeholder="price" name="price">
+                                            <div class="form-floating mb-3">
+                                                <input type="text" id="priceInput" class="form-control" placeholder="price" name="price">
+                                                <label for="priceInput"><i class="fa-solid fa-money-bill-1-wave me-2"></i>Price</label>
                                             </div>
-                                            <button type="submit" class="btn btn-sm btn-outline-secondary">Submit</button>
+                                            <div class="text-center">
+                                                <button type="submit" class="btn btn-sm btn-outline-dark shadow">
+                                                    <i class="fa-solid fa-share-from-square"></i>    
+                                                    Submit
+                                                </button>
+                                            </div>
                                         </fieldset>
                                     </form>
                                     <!--/* end form */-->                                  
@@ -87,6 +92,7 @@
         </section>
     </main>
 
+    <script src="../../../../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="../../controllers/edit-item/edit-item.controller.js"></script>
 
 </body>

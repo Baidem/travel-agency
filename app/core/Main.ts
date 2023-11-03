@@ -40,13 +40,13 @@ export default class Main {
         windowManager.createWindow(WindowNameMapper.HOME, travelItems);
 
         // !! HERE WINDOWS EVENTS !! //
-        // ASK SHOW NEW ITEM FORM //
+        // ** ASK SHOW NEW ITEM FORM ** //
         ipcMain.on("ask-show-new-item-form", (e: any) => {
             console.log("Check! Main.ts ipcMain.on('ask-show-new-item-form', ...)");
             if (windowManager.hasWindow(WindowNameMapper.NEW_ITEM)) {
                 windowManager.getWindow(WindowNameMapper.NEW_ITEM).show();
             } else {
-                windowManager.createWindow(WindowNameMapper.NEW_ITEM, 600, 840);
+                windowManager.createWindow(WindowNameMapper.NEW_ITEM, {}, 500, 800);
 
                 const newItemWindow = windowManager.getWindow(WindowNameMapper.NEW_ITEM);
                 
@@ -71,7 +71,7 @@ export default class Main {
                     // RETURN SUCCESS AND MESSAGE //
                     return {
                         success: true,
-                        msg: "The new travel has been added successfully",
+                        msg: "Successfully added !",
                     };
                 });
 
@@ -82,86 +82,24 @@ export default class Main {
             }
         });
         
-        // ** ASK SHOW EDIT-ITEM ** //
-        ipcMain.on('ask-show-edit-item-form', (e: any, id: number) => {
-            console.log("Check! ipcMain.on('ask-show-edit-item-form', ...)", id);
-            
-            if (windowManager.hasWindow(WindowNameMapper.EDIT_ITEM)) {
-                windowManager.getWindow(WindowNameMapper.EDIT_ITEM).show();
-            } else {
-                const itemToEdit = travelItemService.getById(id);
-                console.log("itemToEdit", itemToEdit);
-                
-                if (!itemToEdit) {
-                    console.log("Item does not exist");
-                    throw "Item does not exist";
-                } 
-                
-                windowManager.createWindow(WindowNameMapper.EDIT_ITEM, itemToEdit, 600, 840);
-        
-                const editWindow = windowManager.getWindow(WindowNameMapper.EDIT_ITEM);
-                
-                // HANDLE EDIT-ITEM //
-                ipcMain.handle('edit-item', (e: any, editedItem: any) => {
-                    console.log("Check! ipcMain.handle('edit-item', ...)", editedItem.id);
-                    
-                    // Update travel list
-                    travelItemService.update(editedItem);
-            
-                    // SEND ITEM-EDITED TO HOME WINDOW OR CREATE A NEW ONE //
-                    if (windowManager.hasWindow(WindowNameMapper.HOME)) {
-                        const homeWindow = windowManager.getWindow(WindowNameMapper.HOME);
-                        homeWindow.webContents.send('item-edited', editedItem);
-                    } else {
-                        const travelItemList = travelItemService.getAll();
-                        windowManager.createWindow(WindowNameMapper.HOME, travelItemList);
-                    }
-
-                    // SEND ITEM-EDITED TO DETAIL WINDOW OR CREATE A NEW ONE //
-                    if (windowManager.hasWindow(WindowNameMapper.DETAIL_ITEM)) {
-                        const detailWindow = windowManager.getWindow(WindowNameMapper.DETAIL_ITEM);
-                        detailWindow.webContents.send('detail-item-edited', editedItem);
-                    } else {
-                        const travelItemList = travelItemService.getAll();
-                        windowManager.createWindow(WindowNameMapper.DETAIL_ITEM, editedItem);
-                    }
-        
-                    // RETURN SUCCESS AND MESSAGE //
-                    return {
-                        success: true,
-                        msg: 'The change was made successfully.'
-                    };
-                });
-                
-                // ON CLOSED REMOVE HANDLER //
-                editWindow.on('closed', () => {
-                    ipcMain.removeHandler('edit-item');
-                });
-            }
-        });
-
         // ** ASK DISPLAY EDIT-ITEM ** //
         ipcMain.on('ask-display-edit-item-form', (e: any, id: number) => {
-            console.log("Check! ipcMain.on('ask-display-edit-item-form', ...)", id);
+            console.log("Check! Main.ts ipcMain.on('ask-display-edit-item-form', ...)", id);
             
             if (windowManager.hasWindow(WindowNameMapper.EDIT_ITEM)) {
                 windowManager.getWindow(WindowNameMapper.EDIT_ITEM).show();
             } else {
                 const itemToEdit = travelItemService.getById(id);
-                console.log("itemToEdit", itemToEdit);
                 
-                if (!itemToEdit) {
-                    console.log("Item does not exist");
-                    throw "Item does not exist";
-                } 
+                if (!itemToEdit) throw "Item does not exist"; 
                 
-                windowManager.createWindow(WindowNameMapper.EDIT_ITEM, itemToEdit, 600, 840);
+                windowManager.createWindow(WindowNameMapper.EDIT_ITEM, itemToEdit, 500, 800);
         
                 const editWindow = windowManager.getWindow(WindowNameMapper.EDIT_ITEM);
                 
                 // HANDLE EDIT-ITEM //
                 ipcMain.handle('edit-item', (e: any, editedItem: any) => {
-                    console.log("Check! ipcMain.handle('edit-item', ...)", editedItem.id);
+                    console.log("Check! Main.ts ipcMain.handle('edit-item', ...)", editedItem.id);
                     
                     // Update travel list
                     travelItemService.update(editedItem);
@@ -187,7 +125,7 @@ export default class Main {
                     // RETURN SUCCESS AND MESSAGE //
                     return {
                         success: true,
-                        msg: 'The change was made successfully.'
+                        msg: 'Successfully modified !'
                     };
                 });
                 
@@ -197,37 +135,35 @@ export default class Main {
                 });
             }
         });
-        
 
         // ** ASK SHOW DETAIL ITEM ** //
         ipcMain.on('ask-show-detail-item', (e: any, id: number) => {
-            console.log("Check! ipcMain.on('ask-show-detail-item', ...)", id);
+            console.log("Check! Main.ts ipcMain.on('ask-show-detail-item', ...)", id);
             
             if (windowManager.hasWindow(WindowNameMapper.DETAIL_ITEM)) {
                 windowManager.getWindow(WindowNameMapper.DETAIL_ITEM).show();
             } else {
                 const travelItem = travelItemService.getById(id);
-                console.log("travelItem", travelItem);
                 
-                if (!travelItem) {
-                    console.log("Item does not exist");
-                    throw "Item does not exist";
-                } 
+                if (!travelItem) throw "Item does not exist"; 
                 
-                windowManager.createWindow(WindowNameMapper.DETAIL_ITEM, travelItem, 1000, 600);
+                windowManager.createWindow(WindowNameMapper.DETAIL_ITEM, travelItem, 1000, 500);
         
                 const detailWindow = windowManager.getWindow(WindowNameMapper.DETAIL_ITEM);
                 
                 // -- HANDLE DELETE-ITEM -- //
                 ipcMain.handle('delete-item', (e: any, id: number) => {
+                    console.log("Check! Main.ts ipcMain.handle('delete-item', ...)", id);
                     // DIALOG BOX //
                     const choice = dialog.showMessageBoxSync({
                         title: 'Delete item',
-                        message: 'Are you sure you want to delete the element permanently?',
+                        message: 'Are you sure you want to delete the element permanently !',
                         buttons: ['Cancel', 'Yes']
                     })
                     // YES //
                     if(choice) {
+                        console.log("choise true -Yes-");
+                        
                         travelItemService.delete(id)
                         if(windowManager.hasWindow(WindowNameMapper.HOME)) {
                             const homeWindow = windowManager.getWindow(WindowNameMapper.HOME)
@@ -237,13 +173,19 @@ export default class Main {
                             const travelItemList = travelItemService.getAll()
                             windowManager.createWindow(WindowNameMapper.HOME, travelItemList)
                         }
-                        return { success: true }
+                        return { 
+                            success: true,
+                            msg: "This element has just been removed! You can close this window please."
+                         }
                     }
                     // CANCEL //
-                    return { success: false }
+                    return { 
+                        success: false,
+                        msg: "The deletion of this item has been cancelled."
+                     }
                 });
                 
-                // ON CLOSED //
+                // ON CLOSED REMOVE HANDLER//
                 detailWindow.on('closed', () => {
                     ipcMain.removeHandler('delete-item');
                 });

@@ -1,5 +1,3 @@
-console.log("check ! home.controller.ts");
-
 // -- GENERATE HTML CARD -- //
 const generateCard = (travelItem: any) => {
 
@@ -14,8 +12,6 @@ const generateCard = (travelItem: any) => {
     const destination = document.createElement("p");
     const shortDescription = document.createElement("p");
     const price = document.createElement("p");
-    const btnDetail = document.createElement("button");
-    const btnEdit = document.createElement("button");
 
     // classList and args
     divColMain.classList.add("item-col-main", "col-lg-4");
@@ -27,18 +23,13 @@ const generateCard = (travelItem: any) => {
     destination.classList.add("item-destination", "card-text");
     shortDescription.classList.add("item-short-description", "card-text");
     price.classList.add("item-price", "card-text");
-    btnDetail.classList.add("btn", "btn-sm", "btn-outline-secondary", "me-2");
-    btnDetail.type = "button";
-    btnEdit.classList.add("btn", "btn-sm", "btn-outline-secondary", "me-2");
-    btnEdit.type = "button";
 
     // textContent and args from data travelItem
     img.src = travelItem.image;
     title.textContent = travelItem.title;
+    destination.textContent = travelItem.destination;
     shortDescription.textContent = travelItem.shortDescription;
-    price.textContent = `${travelItem.price} €`;
-    btnDetail.textContent = "Show travel details";
-    btnEdit.textContent = "Edit travel details";
+    price.textContent = `${travelItem.price.toFixed(2)} €`;
 
     // data-set
     divColMain.dataset.id = travelItem.id;
@@ -49,17 +40,23 @@ const generateCard = (travelItem: any) => {
     price.dataset.id = travelItem.id;
 
     // events
-    btnDetail.addEventListener("click", (e) => {
+    divCard.addEventListener("mouseenter", (e) => {
+        divCard.classList.add("bg-warning-subtle")
+        divCard.classList.remove("bg-primary-subtle")
+    });
+    
+    divCard.addEventListener("mouseleave", (e) => {
+        divCard.classList.add("bg-primary-subtle")
+        divCard.classList.remove("bg-warning-subtle")
+    });
+
+    divCard.addEventListener("click", (e) => {
         e.preventDefault();
         (window as any).ipcRendererCustom.sendAskShowDetailItem(travelItem.id);
     })
-    btnEdit.addEventListener("click", (e) => {
-        e.preventDefault();
-        (window as any).ipcRendererCustom.sendAskShowEditItemForm(travelItem.id);
-    })
 
     // apppend all components
-    divCardBody.append(title, destination, shortDescription, price, btnDetail, btnEdit);
+    divCardBody.append(title, destination, shortDescription, price);
     divCard.append(img, divCardBody);
     divInter.appendChild(divCard);
     divColMain.appendChild(divCard);
@@ -91,7 +88,7 @@ const onNewItemAddedCb = (e: any, travelItem: any) => {
 // CALL BACK //
 const onItemDeletedCb = (e: any, id: number) => {
     const colMain = document.querySelector(`.item-col-main[data-id='${id}']`);
-    colMain?.remove;
+    colMain!.remove();
 }
 // PRELOAD //
 (window as any).ipcRendererCustom.onItemDeleted(onItemDeletedCb);
@@ -114,7 +111,7 @@ const onItemEditedCb = (e: any, editedItem: any) => {
     if(shortDescription) shortDescription.textContent = editedItem.shortDescription;
 
     const price = document.querySelector(`.item-price[data-id='${editedItem.id}']`)
-    if(price) price.textContent = `${editedItem.price} €`;
+    if(price) price.textContent = `${editedItem.price.toFixed(2)} €`;
 }
 // PRELOAD //
 (window as any).ipcRendererCustom.onItemEdited(onItemEditedCb)
