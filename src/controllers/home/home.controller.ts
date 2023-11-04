@@ -77,7 +77,6 @@ const generateCard = (travelItem: any) => {
 // -- ONCE INIT DATA -- //
 // CALL BACK //
 const onceInitDataCb = (e: any, travelItemList: any) => {
-    console.log("Check ! init-data cb", travelItemList);
     // update travel card list
     travelItemList.forEach((travelItem: any) => {
         generateCard(travelItem);
@@ -106,7 +105,6 @@ const onItemDeletedCb = (e: any, id: number) => {
 // -- ON ITEM EDITED -- //
 // CALL BACK //
 const onItemEditedCb = (e: any, editedItem: any) => {
-    console.log("check ! home.controller.ts const onItemEditedCb = (e: any, editedItem: any) => {...}", editedItem.id);
     
     const image = document.querySelector(`.item-img[data-id='${editedItem.id}']`) as HTMLImageElement;
     if(image) image.src = editedItem.image;

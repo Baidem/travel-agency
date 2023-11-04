@@ -1,6 +1,5 @@
 // ** ONCE INIT DATA NEW-ITEM CALL BACK ** //
 const onceInitDataNewItemCb = (e: any) => {
-    console.log("check ! new-item.controller.ts onceInitDataNewItemCb");
 };
 (window as any).ipcRendererCustom.onceInitData(onceInitDataNewItemCb);
 

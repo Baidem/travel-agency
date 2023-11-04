@@ -30,7 +30,6 @@ const onceInitDataEditItemCb = (e: any, itemToEdit: any) => {
 const editForm = document.getElementById('edit-item-form')!;
 
 editForm.addEventListener('submit', (e) => {
-    console.log("check ! travel-item.controller.ts editForm.addEventListener('submit', ...)");
     e.preventDefault();
     const dataForm = new FormData(e.target as HTMLFormElement);
     itemToEditGlobal.image = dataForm.get('image');

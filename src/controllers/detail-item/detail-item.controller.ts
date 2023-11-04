@@ -2,7 +2,6 @@ let globalTravelItem: any;
 
 // -- UPDATE HTML CARD -- //
 function updateTravelCard(globalTravelItem: any) {
-    console.log("Check ! detail-item.controller.ts generateTravelCard", globalTravelItem);
     if (globalTravelItem) {
         // Constants
         const image = document.querySelector("img");
@@ -25,7 +24,6 @@ function updateTravelCard(globalTravelItem: any) {
 //// ** ELECTRON COMMUNICATION ** ////
 // -- ONCE INIT DATA -- //
 const onceInitDataDetailItemCb = (e: any, travelItem: any) => {
-    console.log("Check ! init-data cb", travelItem);
     // update travel card
     globalTravelItem = travelItem;
     updateTravelCard(globalTravelItem);
@@ -35,7 +33,6 @@ const onceInitDataDetailItemCb = (e: any, travelItem: any) => {
 // -- ON ITEM EDITED -- //
 // CALL BACK //
 const onDetailItemEditedCb = (e: any, editedItem: any) => {
-    console.log("check ! detail-item.controller.ts const onItemEditedCb = (e: any, editedItem: any) => {...}", editedItem.id);
     // update travel card
     globalTravelItem = editedItem;
     updateTravelCard(globalTravelItem);
@@ -66,7 +63,6 @@ btnDelete!.addEventListener("click", (e) => {
 })
 // CALL BACK THEN//
 const invokeDeleteItemCb = (res: any) => {
-    console.log("check ! detail-item.controller.ts const invokeDeleteItemCb = (res: any)");
 
     const divMessage = document.querySelector('#response-message')! as HTMLElement;
     divMessage.textContent = res.msg;

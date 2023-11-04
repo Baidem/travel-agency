@@ -325,8 +325,7 @@
 - commentaires
 
 # COMMIT N°8 : Version dev
-# Fork
-
-### TODO
 
 - clean code
+
+# COMMIT N°9 : Version delivery

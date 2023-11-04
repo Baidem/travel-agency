@@ -14,7 +14,6 @@ export default class Main {
     // ** INIT APPLICATION ** //
     private initDefaultListeners(): void {
         this.app.whenReady().then(() => {
-            console.log("Check! Main.ts initDefaultListeners, app.whenReady");
             this.generateMainWindow();
         });
 
@@ -42,7 +41,6 @@ export default class Main {
         // !! HERE WINDOWS EVENTS !! //
         // ** ASK SHOW NEW ITEM FORM ** //
         ipcMain.on("ask-show-new-item-form", (e: any) => {
-            console.log("Check! Main.ts ipcMain.on('ask-show-new-item-form', ...)");
             if (windowManager.hasWindow(WindowNameMapper.NEW_ITEM)) {
                 windowManager.getWindow(WindowNameMapper.NEW_ITEM).show();
             } else {
@@ -52,10 +50,8 @@ export default class Main {
                 
                 // ** HANDLE ADD NEW-ITEM ** //
                 ipcMain.handle("add-new-item", (e, newItem) => {
-                    console.log("Check! Main.ts ipcMain.handle('add-new-item', ...)");
                     const travelItemList = travelItemService.getAll();
                     newItem.id = travelItemList.length > 0 ? travelItemList[travelItemList.length - 1].id + 1 : 1;
-                    console.log("newItem.id", newItem.id);
                     // INSERT NEW ITEM //
                     travelItemService.insert(newItem);
        
@@ -84,7 +80,6 @@ export default class Main {
         
         // ** ASK DISPLAY EDIT-ITEM ** //
         ipcMain.on('ask-display-edit-item-form', (e: any, id: number) => {
-            console.log("Check! Main.ts ipcMain.on('ask-display-edit-item-form', ...)", id);
             
             if (windowManager.hasWindow(WindowNameMapper.EDIT_ITEM)) {
                 windowManager.getWindow(WindowNameMapper.EDIT_ITEM).show();
@@ -99,7 +94,6 @@ export default class Main {
                 
                 // HANDLE EDIT-ITEM //
                 ipcMain.handle('edit-item', (e: any, editedItem: any) => {
-                    console.log("Check! Main.ts ipcMain.handle('edit-item', ...)", editedItem.id);
                     
                     // Update travel list
                     travelItemService.update(editedItem);
@@ -138,7 +132,6 @@ export default class Main {
 
         // ** ASK SHOW DETAIL ITEM ** //
         ipcMain.on('ask-show-detail-item', (e: any, id: number) => {
-            console.log("Check! Main.ts ipcMain.on('ask-show-detail-item', ...)", id);
             
             if (windowManager.hasWindow(WindowNameMapper.DETAIL_ITEM)) {
                 windowManager.getWindow(WindowNameMapper.DETAIL_ITEM).show();
@@ -153,7 +146,6 @@ export default class Main {
                 
                 // -- HANDLE DELETE-ITEM -- //
                 ipcMain.handle('delete-item', (e: any, id: number) => {
-                    console.log("Check! Main.ts ipcMain.handle('delete-item', ...)", id);
                     // DIALOG BOX //
                     const choice = dialog.showMessageBoxSync({
                         title: 'Delete item',
@@ -162,7 +154,6 @@ export default class Main {
                     })
                     // YES //
                     if(choice) {
-                        console.log("choise true -Yes-");
                         
                         travelItemService.delete(id)
                         if(windowManager.hasWindow(WindowNameMapper.HOME)) {
