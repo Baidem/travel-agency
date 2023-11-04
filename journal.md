@@ -321,6 +321,12 @@
 
 # COMMIT N°7 : ALL FEATURES
 
+- design
+- commentaires
+
+# COMMIT N°8 : Version dev
+# Fork
+
 ### TODO
 
 - clean code

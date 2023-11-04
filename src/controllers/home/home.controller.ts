@@ -1,6 +1,6 @@
 // -- GENERATE HTML CARD -- //
 const generateCard = (travelItem: any) => {
-
+   
     // Constants
     const divCardList = document.querySelector("#card-list");
     const divColMain = document.createElement("div");
@@ -8,21 +8,29 @@ const generateCard = (travelItem: any) => {
     const divCard = document.createElement("div");
     const divCardBody = document.createElement("div");
     const img = document.createElement("img");
+    const divTitle = document.createElement("div");
+    const iconTitle = document.createElement("i");
     const title = document.createElement("h5");
+    const divDestination = document.createElement("div");
+    const iconDestination = document.createElement("i");
     const destination = document.createElement("p");
     const shortDescription = document.createElement("p");
     const price = document.createElement("p");
-
+    
     // classList and args
     divColMain.classList.add("item-col-main", "col-lg-4");
     divCard.classList.add("card", "mb-3", "shadow", "bg-primary-subtle");;
     img.classList.add("item-img", "card-img-top");
     img.alt = "travel illustration";
     divCardBody.classList.add("card-body");
-    title.classList.add("item-title", "card-title");
-    destination.classList.add("item-destination", "card-text");
-    shortDescription.classList.add("item-short-description", "card-text");
-    price.classList.add("item-price", "card-text");
+    divTitle.classList.add("row");
+    iconTitle.classList.add("col-2", "fa-solid", "fa-compass", "text-primary", "fs-4");
+    title.classList.add("col-10", "item-title", "card-title");
+    divDestination.classList.add("row");
+    iconDestination.classList.add("col-2", "fa-solid", "fa-map-location-dot", "text-primary", "fs-5");
+    destination.classList.add("col-10","item-destination", "card-text");
+    shortDescription.classList.add("item-short-description", "card-text", "border", "bg-light-subtle", "m-1", "p-2", "rounded", "rounded-1", "shadow");
+    price.classList.add("item-price", "card-text", "text-end", "fs-5", "text-danger");
 
     // textContent and args from data travelItem
     img.src = travelItem.image;
@@ -56,7 +64,9 @@ const generateCard = (travelItem: any) => {
     })
 
     // apppend all components
-    divCardBody.append(title, destination, shortDescription, price);
+    divDestination.append(iconDestination, destination);
+    divTitle.append(iconTitle, title);
+    divCardBody.append(divTitle, divDestination, shortDescription, price);
     divCard.append(img, divCardBody);
     divInter.appendChild(divCard);
     divColMain.appendChild(divCard);

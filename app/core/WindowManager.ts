@@ -24,7 +24,7 @@ class WindowManager {
         if (this.hasWindow(windowName)) {
             return this.windows.get(windowName) as BrowserWindow;
         }
-        throw "La vue n'existe pas.";
+        throw "The view doesn't exist.";
     }
     
     addWindow(windowName: WindowNameMapper, windowToAdd: BrowserWindow): void {
@@ -35,7 +35,7 @@ class WindowManager {
         if (this.hasWindow(windowName)) {
             return this.windows.delete(windowName);
         }
-        throw "La vue n'existe pas.";
+        throw "The view doesn't exist.";
     }
     
     hasWindow(windowName: WindowNameMapper): boolean {
@@ -43,17 +43,13 @@ class WindowManager {
     }
 
     createWindow(templateName: WindowNameMapper, templateData?: any,
-        width = 1400, height = 1200): void {
+        width = 1450, height = 1200): void {
 
         const win = new BrowserWindow({
             width, height,
             webPreferences: {
-                // on arrête d'exposer les node_modules côté front
                 nodeIntegration: false,
-                // on isole tout pour éviter les problèmes
                 contextIsolation: true,
-                // on donne à notre vue le fichier preload.js pour qu'elle expose
-                // la clé et la méthode loadController
                 preload: path.join(__dirname, "..", "preloads", `${templateName}.preload.js`),
             },
         });

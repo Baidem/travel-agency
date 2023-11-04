@@ -147,7 +147,7 @@ export default class Main {
                 
                 if (!travelItem) throw "Item does not exist"; 
                 
-                windowManager.createWindow(WindowNameMapper.DETAIL_ITEM, travelItem, 1000, 500);
+                windowManager.createWindow(WindowNameMapper.DETAIL_ITEM, travelItem, 1000, 520);
         
                 const detailWindow = windowManager.getWindow(WindowNameMapper.DETAIL_ITEM);
                 
@@ -191,7 +191,6 @@ export default class Main {
                 });
             }
         });
-
 
     }
 }
