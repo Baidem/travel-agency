@@ -14,3 +14,5 @@ npm install
 ```bash
 npm start
 ```
+
+Console : ctrl + maj + i
